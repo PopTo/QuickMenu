@@ -7,9 +7,7 @@
 //
 
 #import "MTPSimpleMenuViewController.h"
-
 @interface MTPSimpleMenuViewController () {
-  CGFloat correction;
 }
 
 - (void)setupMenuGestures;
@@ -22,7 +20,6 @@
 @end
 
 @implementation MTPSimpleMenuViewController {
-  CGFloat menuInset;
   BOOL menuViewIsHidden;
   UISwipeGestureRecognizer *shiftMenuGesture;
   UIScreenEdgePanGestureRecognizer *menuEdgePanGesture;
@@ -34,14 +31,6 @@
   
   if(self != nil) {
     menuViewIsHidden = YES;
-    
-    if([[UIDevice currentDevice].systemVersion integerValue] < 8) {
-      correction = 0;
-    } else {
-      correction = -16;
-    }
-    
-    menuInset =  0;
   }
   
   return self;
@@ -56,42 +45,37 @@
 }
 
 #pragma mark Showing Menu
-- (void)setMenuHidden:(BOOL)menuHidden
-{
-  if(self->menuViewIsHidden != menuHidden)
-  {
+- (void)setMenuHidden:(BOOL)menuHidden {
+  
+  if(self->menuViewIsHidden != menuHidden) {
     self->menuViewIsHidden = menuHidden;
     [self switchMenuGestureDirection];
     [self performMenuAnimation];
   }
 }
 
-- (BOOL)menuIsHidden
-{
+- (BOOL)menuIsHidden {
   return self->menuViewIsHidden;
 }
 
-- (IBAction)shiftMenu
-{
+- (IBAction)shiftMenu {
   self.menuHidden = !self.menuHidden;
 }
 
-- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture
-{
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture {
   [self shiftMenu];
 }
 
-- (void)handleEdgePanGesture:(UIScreenEdgePanGestureRecognizer *)gesture
-{
-  if(gesture.state == UIGestureRecognizerStateBegan)
-  {
+- (void)handleEdgePanGesture:(UIScreenEdgePanGestureRecognizer *)gesture {
+  
+  if(gesture.state == UIGestureRecognizerStateBegan) {
     self.menuHidden = NO;
   }
 }
 
 #pragma mark Animating Menu
-- (void)performMenuAnimation
-{
+- (void)performMenuAnimation {
+  
   CGFloat destinationXPos = [self menuDestinationXPos];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
@@ -108,92 +92,55 @@
 }
 
 #pragma mark Private - Positioning Menu
-- (CGFloat)menuDestinationXPos
-{
-  CGFloat destinationXPos = self->correction;
+- (CGFloat)menuDestinationXPos {
   
-  switch (self->_menuHorizontalSpaceConstraint.firstAttribute)
-  {
-    case NSLayoutAttributeLeading:
-    {
-      if(self->menuViewIsHidden == YES)
-      {
-        destinationXPos = -self->_menuWidthConstraint.constant + self.inset;
-      }
-      
-      break;
-    }
-      
-    case NSLayoutAttributeTrailing:
-    {
-      if(self->menuViewIsHidden == YES)
-      {
-        destinationXPos = self->_menuWidthConstraint.constant - self.inset;
-      }
-      break;
-    }
-      
-    default:
-    {
-      break;
-    }
+  CGFloat destinationXPos = 0;
+  
+  if(self->menuViewIsHidden == YES) {
+    destinationXPos = -self->_menuWidthConstraint.constant;
   }
   
   return destinationXPos;
 }
 
-- (void)setInset:(CGFloat)inset {
-  self->menuInset = inset;
-  self->_menuHorizontalSpaceConstraint.constant = [self menuDestinationXPos];
-}
-
-- (CGFloat)inset {
-  return self->menuInset + self->correction;
-}
 
 #pragma mark Private - Setup Gestures
-- (void)setupMenuGestures
-{
+- (void)setupMenuGestures {
+  
   self->shiftMenuGesture =
   [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                             action:@selector(handleSwipeGesture:)];
   self->menuEdgePanGesture =
   [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self
                                                     action:@selector(handleEdgePanGesture:)];
-  switch (self->_menuHorizontalSpaceConstraint.firstAttribute)
-  {
-    case NSLayoutAttributeLeading:
-    {
+  
+  switch (self->_menuHorizontalSpaceConstraint.firstAttribute) {
+      
+    case NSLayoutAttributeLeading: {
       self->menuEdgePanGesture.edges = UIRectEdgeLeft;
       
-      if(self->menuViewIsHidden == NO)
-      {
+      if(self->menuViewIsHidden == NO) {
         self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionLeft;
       }
-      else
-      {
+      else {
         self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionRight;
       }
-      
       break;
     }
       
-    case NSLayoutAttributeTrailing:
-    {
+    case NSLayoutAttributeTrailing: {
       self->menuEdgePanGesture.edges = UIRectEdgeRight;
-      if(self->menuViewIsHidden == NO)
-      {
+      
+      if(self->menuViewIsHidden == NO) {
         self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionRight;
       }
-      else
-      {
+      else {
         self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionLeft;
       }
       break;
     }
       
-    default:
-    {
+    default: {
       break;
     }
   }
@@ -202,24 +149,21 @@
   [self.menuView addGestureRecognizer:self->shiftMenuGesture];
 }
 
-- (void)switchMenuGestureDirection
-{
-  switch(self->shiftMenuGesture.direction)
-  {
-    case UISwipeGestureRecognizerDirectionLeft:
-    {
+- (void)switchMenuGestureDirection {
+  
+  switch(self->shiftMenuGesture.direction) {
+      
+    case UISwipeGestureRecognizerDirectionLeft: {
       self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionRight;
       break;
     }
       
-    case UISwipeGestureRecognizerDirectionRight:
-    {
+    case UISwipeGestureRecognizerDirectionRight: {
       self->shiftMenuGesture.direction = UISwipeGestureRecognizerDirectionLeft;
       break;
     }
       
-    default:
-    {
+    default: {
       break;
     }
   }

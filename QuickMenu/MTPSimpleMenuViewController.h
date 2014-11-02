@@ -13,7 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuHorizontalSpaceConstraint;
-@property (nonatomic) CGFloat inset;
 
 @property (nonatomic, getter=menuIsHidden) BOOL menuHidden;
 - (IBAction)shiftMenu;
