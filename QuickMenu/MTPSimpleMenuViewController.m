@@ -8,7 +8,9 @@
 
 #import "MTPSimpleMenuViewController.h"
 
-@interface MTPSimpleMenuViewController ()
+@interface MTPSimpleMenuViewController () {
+  CGFloat correction;
+}
 
 - (void)setupMenuGestures;
 - (void)switchMenuGestureDirection;
@@ -20,6 +22,7 @@
 @end
 
 @implementation MTPSimpleMenuViewController {
+  CGFloat menuInset;
   BOOL menuViewIsHidden;
   UISwipeGestureRecognizer *shiftMenuGesture;
   UIScreenEdgePanGestureRecognizer *menuEdgePanGesture;
@@ -31,7 +34,14 @@
   
   if(self != nil) {
     menuViewIsHidden = YES;
-    _inset = 0;
+    
+    if([[UIDevice currentDevice].systemVersion integerValue] < 8) {
+      correction = 0;
+    } else {
+      correction = -16;
+    }
+    
+    menuInset =  0;
   }
   
   return self;
@@ -43,8 +53,6 @@
   
   [self setupMenuGestures];
   self->_menuHorizontalSpaceConstraint.constant = [self menuDestinationXPos];
-  self.inset = 0;
-
 }
 
 #pragma mark Showing Menu
@@ -102,7 +110,7 @@
 #pragma mark Private - Positioning Menu
 - (CGFloat)menuDestinationXPos
 {
-  CGFloat destinationXPos = 0;
+  CGFloat destinationXPos = self->correction;
   
   switch (self->_menuHorizontalSpaceConstraint.firstAttribute)
   {
@@ -110,7 +118,7 @@
     {
       if(self->menuViewIsHidden == YES)
       {
-        destinationXPos = -self->_menuWidthConstraint.constant + self->_inset;
+        destinationXPos = -self->_menuWidthConstraint.constant + self.inset;
       }
       
       break;
@@ -120,7 +128,7 @@
     {
       if(self->menuViewIsHidden == YES)
       {
-        destinationXPos = self->_menuWidthConstraint.constant - self->_inset;
+        destinationXPos = self->_menuWidthConstraint.constant - self.inset;
       }
       break;
     }
@@ -135,8 +143,12 @@
 }
 
 - (void)setInset:(CGFloat)inset {
-  self->_inset = inset;
-    self->_menuHorizontalSpaceConstraint.constant = [self menuDestinationXPos];
+  self->menuInset = inset;
+  self->_menuHorizontalSpaceConstraint.constant = [self menuDestinationXPos];
+}
+
+- (CGFloat)inset {
+  return self->menuInset + self->correction;
 }
 
 #pragma mark Private - Setup Gestures
