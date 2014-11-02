@@ -1,13 +1,13 @@
 //
-//  MTPMenuViewController.m
-//  SwipeMenu
+//  MTPQuickMenuViewController.m
+//  QuickMenu
 //
 //  Created by Tomasz Popis on 12/08/14.
 //  Copyright (c) 2014 Melon IT. All rights reserved.
 //
 
-#import "MTPSimpleMenuViewController.h"
-@interface MTPSimpleMenuViewController () {
+#import "MTPQuickMenuViewController.h"
+@interface MTPQuickMenuViewController () {
 }
 
 - (void)setupMenuGestures;
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation MTPSimpleMenuViewController {
+@implementation MTPQuickMenuViewController {
   BOOL menuViewIsHidden;
   UISwipeGestureRecognizer *shiftMenuGesture;
   UIScreenEdgePanGestureRecognizer *menuEdgePanGesture;

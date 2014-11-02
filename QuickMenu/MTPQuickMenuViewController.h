@@ -1,6 +1,6 @@
 //
-//  MTPMenuViewController.h
-//  SwipeMenu
+//  MTPQuickMenuViewController.h
+//  QuickMenu
 //
 //  Created by Tomasz Popis on 12/08/14.
 //  Copyright (c) 2014 Melon IT. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MTPSimpleMenuViewController : UIViewController
+@interface MTPQuickMenuViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIView *menuView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *menuWidthConstraint;
